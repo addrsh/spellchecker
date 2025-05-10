@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * A spellchecker maintains an efficient representation of a dictionary for
@@ -62,13 +63,48 @@ public class SpellChecker {
     }
 
     public boolean isWord(String word) {
-        // TODO: implement me!
-        return false;
+        Node current = root;
+        // Convert to lowercase and follow the path for each character
+        word = word.toLowerCase();
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            int index = c - 'a';
+            // If there's no path for this character, word is not in trie
+            if (current.children[index] == null) {
+                return false;
+            }
+            current = current.children[index];
+        }
+        // Word exists only if we reached a node marked as a word
+        return current.isWord;
     }
 
     public List<String> getOneCharCompletions(String word) {
-        // TOOD: implement me!
-        return null;
+        List<String> completions = new ArrayList<>();
+        Node current = root;
+
+        // Convert to lowercase and follow the path for the prefix
+        word = word.toLowerCase();
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            int index = c - 'a';
+            // If we can't follow the path, there are no completions
+            if (current.children[index] == null) {
+                return completions;
+            }
+            current = current.children[index];
+        }
+
+        // Try adding each possible character
+        for (int i = 0; i < NUM_LETTERS; i++) {
+            if (current.children[i] != null && current.children[i].isWord) {
+                // Convert index back to character and add to completions
+                char nextChar = (char) ('a' + i);
+                completions.add(word + nextChar);
+            }
+        }
+
+        return completions;
     }
 
     public List<String> getOneCharEndCorrections(String word) {
