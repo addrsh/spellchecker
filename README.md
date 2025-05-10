@@ -1,6 +1,6 @@
 # Lab: Spellchecker
 
-Authors: Adarsh Sharma 
+Authors: Adarsh Sharma
 
 ## Resources
 
@@ -12,4 +12,25 @@ Authors: Adarsh Sharma
 
 ## Revision Log
 
-- (_TODO: fill in your changes to your project here!_)
+```
+commit ff1d6f98dd64ca71722e21331386c8fd10dfc299 (HEAD -> main, origin/main, origin/HEAD)
+Author: adarsh <adarsharma.me@gmail.com>
+Date:   Sat May 10 01:48:50 2025 +0000
+
+    part 6 complete
+
+commit 63885daeebff81eddeb06f59827d229a49074518
+Author: adarsh <adarsharma.me@gmail.com>
+Date:   Sat May 10 01:43:06 2025 +0000
+
+    part 4 complete
+
+commit 8fea071d0e7d0d11695407cca0fc2bba9fd45a98
+Author: adarsh <adarsharma.me@gmail.com>
+Date:   Sat May 10 01:32:14 2025 +0000
+
+    add node, add, spellchecker fns
+
+commit 59f7e45d679db674e899742d3d68b509305d347a
+Author: Peter-Michael Osera <osera@cs.grinnell.edu>
+```
