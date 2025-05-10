@@ -42,6 +42,12 @@ public class SpellChecker {
     /** The root of the SpellChecker */
     private Node root;
 
+    /**
+     * Creates a new SpellChecker with a given list of dictionary words.
+     * Each word in the dictionary will be added to the trie data structure.
+     *
+     * @param dict A list of words to be used as the dictionary
+     */
     public SpellChecker(List<String> dict) {
         this.root = new Node();
         for (String word : dict) {
@@ -49,6 +55,12 @@ public class SpellChecker {
         }
     }
 
+    /**
+     * Adds a word to the spell checker's dictionary.
+     * The word is converted to lowercase before being added.
+     *
+     * @param word The word to add to the dictionary
+     */
     public void add(String word) {
         Node current = root;
         for (int i = 0; i < word.length(); i++) {
@@ -62,6 +74,13 @@ public class SpellChecker {
         current.isWord = true;
     }
 
+    /**
+     * Checks if a given word exists in the dictionary.
+     * The check is case-insensitive.
+     *
+     * @param word The word to check
+     * @return true if the word is in the dictionary, false otherwise
+     */
     public boolean isWord(String word) {
         Node current = root;
         // Convert to lowercase and follow the path for each character
@@ -79,6 +98,14 @@ public class SpellChecker {
         return current.isWord;
     }
 
+    /**
+     * Finds all possible valid words that can be formed by adding one character
+     * to the end of the given word.
+     *
+     * @param word The word to complete
+     * @return A list of valid words that can be formed by adding one character to
+     *         the end
+     */
     public List<String> getOneCharCompletions(String word) {
         List<String> completions = new ArrayList<>();
         Node current = root;
@@ -107,6 +134,13 @@ public class SpellChecker {
         return completions;
     }
 
+    /**
+     * Finds all valid words that can be formed by replacing the last character
+     * of the given word with a different character.
+     *
+     * @param word The word to correct
+     * @return A list of valid words that differ only in the last character
+     */
     public List<String> getOneCharEndCorrections(String word) {
         List<String> corrections = new ArrayList<>();
         if (word.length() == 0) {
@@ -138,6 +172,13 @@ public class SpellChecker {
         return corrections;
     }
 
+    /**
+     * Finds all valid words that can be formed by replacing any single character
+     * in the given word with a different character.
+     *
+     * @param word The word to correct
+     * @return A list of valid words that differ by exactly one character
+     */
     public List<String> getOneCharCorrections(String word) {
         List<String> corrections = new ArrayList<>();
         if (word.length() == 0) {
@@ -162,15 +203,15 @@ public class SpellChecker {
                 current = current.children[index];
             }
 
-            if (!pathValid)
+            if (!pathValid) {
                 continue;
-
+            }
             // Try each possible replacement letter at this position
             for (int i = 0; i < NUM_LETTERS; i++) {
                 char replacement = (char) ('a' + i);
-                if (replacement == word.charAt(pos))
+                if (replacement == word.charAt(pos)) {
                     continue; // Skip if same as original
-
+                }
                 // Check if this replacement leads to a valid word
                 Node checkNode = current;
                 if (checkNode.children[i] != null) {
@@ -190,7 +231,8 @@ public class SpellChecker {
 
                     // If we could follow the entire path and it's a word, add it
                     if (validWord && checkNode.isWord) {
-                        String corrected = word.substring(0, pos) + replacement + word.substring(pos + 1);
+                        String corrected = word.substring(0, pos) + replacement
+                                + word.substring(pos + 1);
                         corrections.add(corrected);
                     }
                 }
@@ -200,6 +242,16 @@ public class SpellChecker {
         return corrections;
     }
 
+    /**
+     * The main entry point for the SpellChecker program.
+     * Supports three commands:
+     * - check: determines if a word is spelled correctly
+     * - complete: suggests completions for a word
+     * - correct: suggests corrections for a misspelled word
+     *
+     * @param args Command line arguments: [command] [word]
+     * @throws IOException If the dictionary file cannot be read
+     */
     public static void main(String[] args) throws IOException {
         if (args.length != 2) {
             System.err.println("Usage: java SpellChecker <command> <word>");
