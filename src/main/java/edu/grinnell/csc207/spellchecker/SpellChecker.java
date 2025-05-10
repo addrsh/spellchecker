@@ -108,13 +108,96 @@ public class SpellChecker {
     }
 
     public List<String> getOneCharEndCorrections(String word) {
-        // TODO: implement me!
-        return null;
+        List<String> corrections = new ArrayList<>();
+        if (word.length() == 0) {
+            return corrections;
+        }
+
+        Node current = root;
+        word = word.toLowerCase();
+
+        // Follow the path for all but the last character
+        for (int i = 0; i < word.length() - 1; i++) {
+            char c = word.charAt(i);
+            int index = c - 'a';
+            if (current.children[index] == null) {
+                return corrections;
+            }
+            current = current.children[index];
+        }
+
+        // Try replacing the last character with every possible letter
+        String prefix = word.substring(0, word.length() - 1);
+        for (int i = 0; i < NUM_LETTERS; i++) {
+            if (current.children[i] != null && current.children[i].isWord) {
+                char replacement = (char) ('a' + i);
+                corrections.add(prefix + replacement);
+            }
+        }
+
+        return corrections;
     }
 
     public List<String> getOneCharCorrections(String word) {
-        // TODO: implement me!
-        return null;
+        List<String> corrections = new ArrayList<>();
+        if (word.length() == 0) {
+            return corrections;
+        }
+
+        word = word.toLowerCase();
+
+        // Try replacing each character position
+        for (int pos = 0; pos < word.length(); pos++) {
+            Node current = root;
+
+            // Follow path up to the position we want to change
+            boolean pathValid = true;
+            for (int i = 0; i < pos; i++) {
+                char c = word.charAt(i);
+                int index = c - 'a';
+                if (current.children[index] == null) {
+                    pathValid = false;
+                    break;
+                }
+                current = current.children[index];
+            }
+
+            if (!pathValid)
+                continue;
+
+            // Try each possible replacement letter at this position
+            for (int i = 0; i < NUM_LETTERS; i++) {
+                char replacement = (char) ('a' + i);
+                if (replacement == word.charAt(pos))
+                    continue; // Skip if same as original
+
+                // Check if this replacement leads to a valid word
+                Node checkNode = current;
+                if (checkNode.children[i] != null) {
+                    checkNode = checkNode.children[i];
+
+                    // Try to follow the rest of the word after our replacement
+                    boolean validWord = true;
+                    for (int j = pos + 1; j < word.length(); j++) {
+                        char c = word.charAt(j);
+                        int index = c - 'a';
+                        if (checkNode.children[index] == null) {
+                            validWord = false;
+                            break;
+                        }
+                        checkNode = checkNode.children[index];
+                    }
+
+                    // If we could follow the entire path and it's a word, add it
+                    if (validWord && checkNode.isWord) {
+                        String corrected = word.substring(0, pos) + replacement + word.substring(pos + 1);
+                        corrections.add(corrected);
+                    }
+                }
+            }
+        }
+
+        return corrections;
     }
 
     public static void main(String[] args) throws IOException {
@@ -140,7 +223,7 @@ public class SpellChecker {
                 }
 
                 case "correct": {
-                    List<String> corrections = checker.getOneCharEndCorrections(word);
+                    List<String> corrections = checker.getOneCharCorrections(word);
                     for (String correction : corrections) {
                         System.out.println(correction);
                     }
