@@ -26,18 +26,39 @@ public class SpellChecker {
 
     /** A Node of the SpellChecker structure. */
     private class Node {
-        // TODO: implement me!
+        /** Children nodes for each letter of the alphabet */
+        private Node[] children;
+        /** Whether this node represents the end of a valid word */
+        private boolean isWord;
+
+        /** Constructor for a new Node */
+        public Node() {
+            this.children = new Node[NUM_LETTERS];
+            this.isWord = false;
+        }
     }
 
     /** The root of the SpellChecker */
     private Node root;
 
     public SpellChecker(List<String> dict) {
-        // TODO: implement me!
+        this.root = new Node();
+        for (String word : dict) {
+            add(word.toLowerCase());
+        }
     }
 
     public void add(String word) {
-        // TODO: implement me!
+        Node current = root;
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            int index = c - 'a';
+            if (current.children[index] == null) {
+                current.children[index] = new Node();
+            }
+            current = current.children[index];
+        }
+        current.isWord = true;
     }
 
     public boolean isWord(String word) {
